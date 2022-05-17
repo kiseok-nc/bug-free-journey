@@ -1,0 +1,54 @@
+eval $(ssh-agent -s)#!/bin/bash
+
+##################################################################################################################################
+##################################################################################################################################
+# 	
+#	Modify to your env
+#
+	name="기석"			
+	IP="..."
+#
+#
+#
+##################################################################################################################################	
+##################################################################################################################################
+
+trap "test" INT 		#SIGHUP SIGINT SIGTERM
+
+function test() {
+
+	time=`date +%T`
+	a=buff.txt
+
+	if [ -e ${a} ]; then
+			echo ""
+			echo "             Write message"
+			echo "_________________________________________"
+			read send_chat
+
+			scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/pratice/chat > /dev/null
+
+			cp buff.txt message.txt
+			echo "$name[$time] : $send_chat" >> message.txt
+			
+			cp message.txt buff.txt
+			scp buff.txt dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat > /dev/null
+
+			rm buff.txt
+	fi
+}
+
+while [ 1 ];
+do
+	scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/pratice/chat > /dev/null
+	echo ""
+	echo ""
+	tail -n 20 buff.txt
+done
+
+
+
+
+
+
+
