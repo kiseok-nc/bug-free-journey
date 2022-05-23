@@ -4,10 +4,10 @@ eval $(ssh-agent -s)#!/bin/bash
 ##################################################################################################################################
 # 	
 #	Modify to your env
-#
-	name="기석"			
-	IP="..."
-#
+# 
+	name=""			# User name
+	IP=""	# Server ip
+#	Add repository  ~/workspace/practice/chat/bug-free-journey
 #
 #
 ##################################################################################################################################	
@@ -15,35 +15,50 @@ eval $(ssh-agent -s)#!/bin/bash
 
 trap "test" INT 		#SIGHUP SIGINT SIGTERM
 
+flag=0
+
 function test() {
 
 	time=`date +%T`
 	a=buff.txt
+	
+	if [ ${flag} -eq 1 ]; then
+		flag=0
 
-	if [ -e ${a} ]; then
-			echo ""
-			echo "             Write message"
-			echo "_________________________________________"
-			read send_chat
+		echo ""
+		echo "             Write message"
+		echo "_________________________________________"
+		read send_chat 
 
-			scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/pratice/chat > /dev/null
+		scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
+		
+		cp buff.txt message.txt
+		echo "$name[$time] : $send_chat" >> message.txt
+		cp message.txt buff.txt
 
-			cp buff.txt message.txt
-			echo "$name[$time] : $send_chat" >> message.txt
-			
-			cp message.txt buff.txt
-			scp buff.txt dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat > /dev/null
+		#tail -n 10 buff.txt
 
-			rm buff.txt
+		scp buff.txt dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat > /dev/null
+
+		
 	fi
 }
 
 while [ 1 ];
 do
-	scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/pratice/chat > /dev/null
-	echo ""
-	echo ""
-	tail -n 20 buff.txt
+
+	FILESIZE1=$(wc -c buff.txt | awk '{print $1}') 
+	scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
+	flag=1
+	FILESIZE2=$(wc -c buff.txt | awk '{print $1}')
+
+	if [ ${FILESIZE1} -ne ${FILESIZE2} ];then 
+	
+		clear
+		tail -n 10 buff.txt
+		flag=0
+	fi
+
 done
 
 
