@@ -13,74 +13,53 @@ eval $(ssh-agent -s)#!/bin/bash
 ##################################################################################################################################	
 ##################################################################################################################################
 
+trap "test" INT  		#SIGHUP SIGINT SIGTERM
 
 
 
-
-
-# trap "exit" SIGTSTP
-
-# function exit() {
- 
-# 	echo $$
-# 	kill -9 $$
-
-# }
-
-
-trap "test" INT 		#SIGHUP SIGINT SIGTERM
-
-flag=0
 
 function test() {
 
 	time=`date +%T`
 	a=buff.txt
+	
 
+	if [ -e ${a} ]; then
+			echo ""
+			echo "             Write message"
+			echo "_________________________________________"
+			read send_chat
 
-	if [ ${flag} -eq 1 ]; then
-		flag=0
+			scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
 
-		echo ""
-		echo "             Write message"
-		echo "_________________________________________"
-		read send_chat 
+			cp buff.txt message.txt
+			echo "$name[$time] : $send_chat" >> message.txt
+			
+			cp message.txt buff.txt
+			scp buff.txt dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat > /dev/null
 
-		scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
-		
-		cp buff.txt message.txt
-		echo "$name[$time] : $send_chat" >> message.txt
-		cp message.txt buff.txt
-
-		#tail -n 10 buff.txt
-
-		scp buff.txt dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat > /dev/null
-
-
-
-		
-		
+			rm buff.txt
 	fi
 }
 
 while [ 1 ];
 do
+	FILE1=buff.txt
+	FILESIZE1=$(wc -c "$FILE1" | awk '{print $1}')
+	 
+	scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null 
+	 
+	FILE2=buff.txt
+	FILESIZE2=$(wc -c "$FILE2" | awk '{print $1}')
 
-	
-
-
-
-	FILESIZE1=$(wc -c buff.txt | awk '{print $1}') 
-	scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
-	flag=1
-	FILESIZE2=$(wc -c buff.txt | awk '{print $1}')
 
 	if [ ${FILESIZE1} -ne ${FILESIZE2} ];then 
-	
-		clear
-		tail -n 10 buff.txt
-		flag=0
+		echo ""
+		echo ""
+		tail -n 20 buff.txt
 	fi
+
+ 
 
 done
 
