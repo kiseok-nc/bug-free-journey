@@ -6,8 +6,13 @@ eval $(ssh-agent -s)#!/bin/bash
 #
 #	Modify to your env
 # 
-	name="기석"			# User name
-	IP="192.168.13.117"	# Server ip
+<<<<<<< HEAD
+	name=""			# User name
+	IP=""	# Server ip
+=======
+	name=""		     	# User name
+	IP=""	# Server ip
+>>>>>>> main
 #	Add repository  ~/workspace/practice/chat/bug-free-journey
 #
 #
@@ -44,8 +49,8 @@ function test() {
 		flag=0
 
 		echo ""
-		echo "             Write message"
-		echo "_________________________________________"
+		echo "            Write message "
+		echo "________________________________________"
 		read send_chat 
 
 		scp dlrltjr@$IP:/home/dlrltjr/workspace/pratice/chat/buff.txt ~/workspace/practice/chat > /dev/null
